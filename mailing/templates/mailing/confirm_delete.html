@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление — Сервис рассылок{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Подтвердите удаление</h1>
+<p class="text-muted">Вы действительно хотите удалить объект: <strong>{{ object }}</strong>?</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Удалить</button>
+  <a href="javascript:history.back()" class="btn btn-outline-secondary">Отмена</a>
+</form>
+{% endblock %}

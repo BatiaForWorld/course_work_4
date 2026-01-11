@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактирование профиля — Сервис рассылок{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Редактирование профиля</h1>
+
+<form method="post" enctype="multipart/form-data" class="card card-body" style="max-width: 720px;">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label" for="id_first_name">Имя</label>
+      {{ form.first_name }}
+      <div class="text-danger">{{ form.first_name.errors }}</div>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="id_last_name">Фамилия</label>
+      {{ form.last_name }}
+      <div class="text-danger">{{ form.last_name.errors }}</div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label" for="id_phone">Телефон</label>
+      {{ form.phone }}
+      <div class="text-danger">{{ form.phone.errors }}</div>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="id_country">Страна</label>
+      {{ form.country }}
+      <div class="text-danger">{{ form.country.errors }}</div>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label" for="id_avatar">Аватар</label>
+      {{ form.avatar }}
+      <div class="text-danger">{{ form.avatar.errors }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-3">
+    <button class="btn btn-primary" type="submit">Сохранить</button>
+    <a class="btn btn-outline-secondary" href="{% url 'users:profile' %}">Назад</a>
+  </div>
+</form>
+{% endblock %}

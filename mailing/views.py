@@ -135,6 +135,7 @@ class MailingListView(LoginRequiredMixin, OwnerQuerySetMixin, ListView):
 		qs = super().get_queryset().select_related("message").prefetch_related("recipients")
 		for mailing in qs:
 			mailing.update_status(save=True)
+			mailing.can_send = can_send_mailing(mailing)
 		return qs
 
 
@@ -203,6 +204,12 @@ class MailingReportView(LoginRequiredMixin, OwnerQuerySetMixin, ListView):
 	model = Mailing
 	template_name = "mailing/report_list.html"
 	manager_permission = "mailing.can_view_all_mailings"
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		for mailing in context.get("object_list", []):
+			mailing.update_status(save=True)
+		return context
 
 	def get_queryset(self):
 		qs = super().get_queryset()

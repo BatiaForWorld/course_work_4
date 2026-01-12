@@ -35,6 +35,13 @@
             <td class="text-end">
               <a class="btn btn-sm btn-outline-primary" href="{% url 'mailing:mailing_detail' mailing.pk %}">Открыть</a>
 
+              {% if mailing.owner_id == user.id and mailing.can_send %}
+                <form method="post" action="{% url 'mailing:mailing_send' mailing.pk %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-success">Отправить</button>
+                </form>
+              {% endif %}
+
               {% if mailing.owner_id == user.id %}
                 <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailing:mailing_edit' mailing.pk %}">Изменить</a>
                 <a class="btn btn-sm btn-outline-danger" href="{% url 'mailing:mailing_delete' mailing.pk %}">Удалить</a>

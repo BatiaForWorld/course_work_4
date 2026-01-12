@@ -201,13 +201,16 @@
 
 ## Настройка email
 
-Настройки почты задаются через переменные окружения (файл `.env`), править `config/settings.py` не нужно.
+править `config/settings.py`
+- `EMAIL_USE_TLS` 
+- `EMAIL_USE_SSL`.
 
+  
+Переменные окружения (файл `.env`)
 Минимально необходимые переменные:
 - `EMAIL_BACKEND` (обычно `django.core.mail.backends.smtp.EmailBackend`)
 - `EMAIL_HOST`, `EMAIL_PORT`
 - `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`
-- `EMAIL_USE_TLS` или `EMAIL_USE_SSL` (выберите одно)
 
 ## Основные возможности
 

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль — Сервис рассылок{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="mb-0">Профиль</h1>
+  <a class="btn btn-outline-secondary" href="{% url 'users:profile_edit' %}">Редактировать</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-3">
+        {% if user.avatar %}
+          <img src="{{ user.avatar.url }}" alt="avatar" class="img-fluid rounded">
+        {% else %}
+          <div class="text-muted">Аватар не задан</div>
+        {% endif %}
+      </div>
+      <div class="col-md-9">
+        <div class="mb-2"><span class="text-muted">Email:</span> <strong>{{ user.email }}</strong></div>
+        <div class="mb-2"><span class="text-muted">Имя:</span> {{ user.first_name|default:"—" }}</div>
+        <div class="mb-2"><span class="text-muted">Фамилия:</span> {{ user.last_name|default:"—" }}</div>
+        <div class="mb-2"><span class="text-muted">Телефон:</span> {{ user.phone|default:"—" }}</div>
+        <div class="mb-2"><span class="text-muted">Страна:</span> {{ user.country|default:"—" }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

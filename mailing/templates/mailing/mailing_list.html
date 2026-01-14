@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Рассылки — Сервис рассылок{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="mb-0">Рассылки</h1>
+  <a class="btn btn-primary" href="{% url 'mailing:mailing_create' %}">Создать</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <table class="table table-hover mb-0 align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Период</th>
+          <th>Статус</th>
+          <th>Активна</th>
+          <th>Тема</th>
+          <th class="text-end">Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mailing in object_list %}
+          <tr>
+            <td>{{ mailing.id }}</td>
+            <td>
+              <div><small class="text-muted">Старт:</small> {{ mailing.start_time }}</div>
+              <div><small class="text-muted">Финиш:</small> {{ mailing.end_time }}</div>
+            </td>
+            <td>{{ mailing.get_status_display }}</td>
+            <td>{% if mailing.is_active %}Да{% else %}Нет{% endif %}</td>
+            <td class="text-muted">{{ mailing.message.subject }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'mailing:mailing_detail' mailing.pk %}">Открыть</a>
+
+              {% if mailing.owner_id == user.id and mailing.can_send %}
+                <form method="post" action="{% url 'mailing:mailing_send' mailing.pk %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-success">Отправить</button>
+                </form>
+              {% endif %}
+
+              {% if mailing.owner_id == user.id %}
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailing:mailing_edit' mailing.pk %}">Изменить</a>
+                <a class="btn btn-sm btn-outline-danger" href="{% url 'mailing:mailing_delete' mailing.pk %}">Удалить</a>
+              {% endif %}
+
+              {% if perms.mailing.can_toggle_mailings %}
+                <form method="post" action="{% url 'mailing:mailing_toggle' mailing.pk %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-warning">{% if mailing.is_active %}Отключить{% else %}Включить{% endif %}</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-muted">Рассылок ещё нет.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

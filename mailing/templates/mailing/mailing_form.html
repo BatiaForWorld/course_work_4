@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Рассылка — Сервис рассылок{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">{% if object %}Редактирование рассылки{% else %}Новая рассылка{% endif %}</h1>
+
+<form method="post" class="card card-body">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label" for="id_start_time">Дата и время начала</label>
+      {{ form.start_time }}
+      <div class="text-danger">{{ form.start_time.errors }}</div>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="id_end_time">Дата и время окончания</label>
+      {{ form.end_time }}
+      <div class="text-danger">{{ form.end_time.errors }}</div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label" for="id_periodicity">Периодичность</label>
+      {{ form.periodicity }}
+      <div class="text-danger">{{ form.periodicity.errors }}</div>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label" for="id_message">Сообщение</label>
+      {{ form.message }}
+      <div class="text-danger">{{ form.message.errors }}</div>
+      <div class="form-text">В списке только ваши сообщения.</div>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label">Получатели</label>
+      <div class="border rounded p-2">
+        {{ form.recipients }}
+      </div>
+      <div class="text-danger">{{ form.recipients.errors }}</div>
+      <div class="form-text">В списке только ваши получатели.</div>
+    </div>
+
+    <div class="col-12">
+      <div class="form-check">
+        {{ form.is_active }}
+        <label class="form-check-label" for="id_is_active">Активна</label>
+      </div>
+      <div class="text-danger">{{ form.is_active.errors }}</div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-3">
+    <button class="btn btn-primary" type="submit">Сохранить</button>
+    <a class="btn btn-outline-secondary" href="{% url 'mailing:mailing_list' %}">Назад</a>
+  </div>
+</form>
+{% endblock %}

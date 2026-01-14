@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Отчеты — Сервис рассылок{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Отчеты по рассылкам</h1>
+
+<div class="card">
+  <div class="card-body">
+    <table class="table table-hover mb-0 align-middle">
+      <thead>
+        <tr>
+          <th>Рассылка</th>
+          <th>Статус</th>
+          <th>Период</th>
+          <th class="text-end">Успешно</th>
+          <th class="text-end">Не успешно</th>
+          <th class="text-end">Всего</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mailing in object_list %}
+          <tr>
+            <td>
+              <a href="{% url 'mailing:mailing_detail' mailing.pk %}">#{{ mailing.pk }}</a>
+              <div class="text-muted small">{{ mailing.message.subject }}</div>
+            </td>
+            <td>{{ mailing.get_status_display }}</td>
+            <td>
+              <div><small class="text-muted">Старт:</small> {{ mailing.start_time }}</div>
+              <div><small class="text-muted">Финиш:</small> {{ mailing.end_time }}</div>
+            </td>
+            <td class="text-end">{{ mailing.success_count }}</td>
+            <td class="text-end">{{ mailing.failed_count }}</td>
+            <td class="text-end">{{ mailing.total_count }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-muted">Данных пока нет.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

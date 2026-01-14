@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход — Сервис рассылок{% endblock %}
+
+{% block content %}
+<h1 class="mb-3">Вход</h1>
+
+<form method="post" class="card card-body" style="max-width: 520px;">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <div class="mb-3">
+    <label class="form-label" for="id_username">Email</label>
+    {{ form.username }}
+    <div class="text-danger">{{ form.username.errors }}</div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_password">Пароль</label>
+    {{ form.password }}
+    <div class="text-danger">{{ form.password.errors }}</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Войти</button>
+    <a class="btn btn-outline-secondary" href="{% url 'users:password_reset' %}">Забыли пароль?</a>
+  </div>
+</form>
+{% endblock %}

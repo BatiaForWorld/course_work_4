@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,14 +16,17 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('start_time', models.DateTimeField()),
                 ('end_time', models.DateTimeField()),
-                ('status', models.CharField(choices=[('created', 'Создана'), ('running', 'Запущена'), ('finished', 'Завершена')], default='created', max_length=20)),
+                ('status',
+                 models.CharField(choices=[('created', 'Создана'), ('running', 'Запущена'), ('finished', 'Завершена')],
+                                  default='created', max_length=20)),
                 ('is_active', models.BooleanField(default=True)),
             ],
             options={
                 'verbose_name': 'Рассылка',
                 'verbose_name_plural': 'Рассылки',
                 'ordering': ('-start_time',),
-                'permissions': (('can_view_all_mailings', 'Может просматривать все рассылки'), ('can_toggle_mailings', 'Может отключать рассылки')),
+                'permissions': (('can_view_all_mailings', 'Может просматривать все рассылки'),
+                                ('can_toggle_mailings', 'Может отключать рассылки')),
             },
         ),
         migrations.CreateModel(
@@ -32,7 +34,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('attempt_time', models.DateTimeField(auto_now_add=True)),
-                ('status', models.CharField(choices=[('success', 'Успешно'), ('failed', 'Не успешно')], max_length=10)),
+                ('status', models.CharField(
+                    choices=[('success', 'Успешно'),
+                             ('failed', 'Не успешно')],
+                    max_length=10)),
                 ('server_response', models.TextField(blank=True)),
             ],
             options={

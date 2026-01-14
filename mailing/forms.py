@@ -47,7 +47,7 @@ class MailingForm(forms.ModelForm):
 
     class Meta:
         model = Mailing
-        fields = ("start_time", "end_time", "message", "recipients", "is_active")
+        fields = ("start_time", "end_time", "periodicity", "message", "recipients", "is_active")
         widgets = {
             "recipients": forms.CheckboxSelectMultiple,
         }

@@ -21,6 +21,12 @@
       <div class="text-danger">{{ form.end_time.errors }}</div>
     </div>
 
+    <div class="col-md-6">
+      <label class="form-label" for="id_periodicity">Периодичность</label>
+      {{ form.periodicity }}
+      <div class="text-danger">{{ form.periodicity.errors }}</div>
+    </div>
+
     <div class="col-12">
       <label class="form-label" for="id_message">Сообщение</label>
       {{ form.message }}

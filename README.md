@@ -201,16 +201,11 @@
 
 ## Настройка email
 
-править `config/settings.py`
-- `EMAIL_USE_TLS` 
-- `EMAIL_USE_SSL`.
-
-  
-Переменные окружения (файл `.env`)
 Минимально необходимые переменные:
 - `EMAIL_BACKEND` (обычно `django.core.mail.backends.smtp.EmailBackend`)
 - `EMAIL_HOST`, `EMAIL_PORT`
 - `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`
+
 
 ## Основные возможности
 
@@ -229,7 +224,193 @@ python manage.py setup_roles
 
 
 ```bash
- python manage.py send_mailing <id>
+
+python manage.py send_mailing <id>
 ```
+
 разовая отправка рассылки с указанным идентификатором.
+
+## Celery (автоматическая рассылка)
+
+Автоматическая отправка по расписанию работает только если запущены:
+- брокер (Redis),
+- Celery Worker (исполняет задачи),
+- Celery Beat (планировщик, который ставит задачи в очередь).
+
+### Запуск в разработке (локально)
+
+1) Убедитесь, что Redis запущен и отвечает:
+```bash
+redis-cli ping
+```
+
+2) В первом терминале запустите Django:
+```bash
+source .venv/bin/activate
+python manage.py runserver
+```
+
+3) Во втором терминале запустите Celery Worker:
+```bash
+source .venv/bin/activate
+celery -A config worker -l info
+```
+
+4) В третьем терминале запустите Celery Beat:
+```bash
+source .venv/bin/activate
+celery -A config beat -l info
+```
+
+Опционально (удобно для dev):
+```bash
+source .venv/bin/activate
+celery -A config worker -l info -B
+```
+
+Если рассылки были созданы до включения планировщика, пересчитайте расписание:
+```bash
+python manage.py sync_mailing_schedule --all
+```
+
+## Для продакшн:
+
+## 1: Использование Supervisor (Рекомендуется)
+
+
+Это наиболее надежный способ для управления процессами.
+
+Установка Supervisor:
+
+```
+sudo apt update
+sudo apt install supervisor
+```
+
+Создание файла конфигурации для воркера Celery:
+
+Создайте файл, например: 
+
+```
+sudo nano /etc/supervisor/conf.d/celery-worker.conf:
+```
+
+Внесите информацию (замените пути и имя проекта):
+
+
+```
+[program:celery-worker]
+command=/path/to/your/venv/bin/celery -A your_project worker --loglevel=INFO
+directory=/path/to/your/project/
+user=your_user
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/celery/worker.log
+```
+
+Создание файла конфигурации для Celery Beat:
+Создайте файл:
+
+```
+sudo nano /etc/supervisor/conf.d/celery-beat.conf
+```
+
+ Внесите информациб со своими значениями:
+Внесите информацию (замените пути и имя проекта):
+
+```
+[program:celery-beat]
+command=/path/to/your/venv/bin/celery -A your_project beat --loglevel=INFO
+directory=/path/to/your/project/
+user=your_user
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/celery/beat.log
+```
+
+### Запуск и проверка Supervisor
+
+```
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl status celery-worker
+sudo supervisorctl status celery-beat
+```
+
+
+# 2: Использование systemd:
+
+
+1. Создание файла .service для воркера:
+
+Создайте :
+
+```
+sudo nano /etc/systemd/system/celery-worker.service
+```
+Внесите информациб со своими значениями:
+Внесите информацию (замените пути и имя проекта):
+
+```
+[Unit]
+Description=Celery Worker
+After=network.target redis.service # или rabbitmq.service, в зависимости от брокера
+
+[Service]
+User=your_user
+Group=your_user
+WorkingDirectory=/path/to/your/project/
+ExecStart=/path/to/your/venv/bin/celery -A your_project worker --loglevel=INFO
+Restart=always
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+2. Создание файла .service для Beat:
+
+Создайте файл:
+
+```
+sudo nano /etc/systemd/system/celery-beat.service
+```
+Внесите информациб со своими значениями:
+Внесите информацию (замените пути и имя проекта):
+
+```
+[Unit]
+Description=Celery Beat
+After=network.target redis.service # или rabbitmq.service
+
+[Service]
+User=your_user
+Group=your_user
+WorkingDirectory=/path/to/your/project/
+ExecStart=/path/to/your/venv/bin/celery -A your_project beat --loglevel=INFO
+Restart=always
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+3. Запуск и включение сервисов:
+
+```
+sudo systemctl daemon-reload
+sudo systemctl start celery-worker
+sudo systemctl enable celery-worker
+sudo systemctl start celery-beat
+sudo systemctl enable celery-beat
+sudo systemctl status celery-worker celery-beat
+```
+
+Документация по Celery - https://docs.celeryq.dev/en/main/getting-started/introduction.html
+
+
+
 

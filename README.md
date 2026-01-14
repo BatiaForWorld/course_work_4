@@ -1,7 +1,5 @@
 # Сервис управления рассылками
 
-Проект и пользовательский интерфейс выполнены на русском языке.
-
 В коммиты не добавлены игнорируемые файлы.
 
 
@@ -203,13 +201,11 @@
 
 ## Настройка email
 
-Настройки почты задаются через переменные окружения (файл `.env`), править `config/settings.py` не нужно.
-
 Минимально необходимые переменные:
 - `EMAIL_BACKEND` (обычно `django.core.mail.backends.smtp.EmailBackend`)
 - `EMAIL_HOST`, `EMAIL_PORT`
 - `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`
-- `EMAIL_USE_TLS` или `EMAIL_USE_SSL` (выберите одно)
+
 
 ## Основные возможности
 
@@ -228,6 +224,7 @@ python manage.py setup_roles
 
 
 ```bash
+
 python manage.py send_mailing <id>
 ```
 
@@ -413,3 +410,7 @@ sudo systemctl status celery-worker celery-beat
 ```
 
 Документация по Celery - https://docs.celeryq.dev/en/main/getting-started/introduction.html
+
+
+
+

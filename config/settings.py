@@ -125,7 +125,6 @@ CACHES = {
     }
 }
 
-# Логирование (проект и интерфейс на русском, поэтому тексты событий/ошибок тоже на русском)
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 
 LOGGING = {
@@ -160,7 +159,6 @@ LOGGING = {
     },
 }
 
-# Celery
 CELERY_BROKER_URL = os.getenv(
     "CELERY_BROKER_URL",
     os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0"),
